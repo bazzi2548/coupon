@@ -1,0 +1,16 @@
+services:
+  coupon:
+    image: mysql:8.3.0
+    container_name: mysql_coupon
+    ports:
+      - 3306:3306
+    volumes:
+      - ./database_data:/var/lib/mysql
+    command:
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    restart: always
