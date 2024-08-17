@@ -36,5 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
+*.yml
 .env
 /database_data/
