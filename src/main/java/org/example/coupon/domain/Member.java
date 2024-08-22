@@ -40,9 +40,9 @@ public class Member {
     private LocalDateTime updatedAt;
 
     public Member(SignupMemberRequest request, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.email = request.email();
-        this.password = bCryptPasswordEncoder.encode(request.password());
-        this.nickName = request.nickName();
+        this.email = request.email().trim();
+        this.password = bCryptPasswordEncoder.encode(request.password().trim());
+        this.nickName = request.nickName().trim();
         this.birthday = request.birthday();
     }
 }
