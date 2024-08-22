@@ -1,6 +1,7 @@
 package org.example.coupon.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.coupon.dto.request.SignupMemberRequest;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(indexes =
 @Index(name = "idx_member", columnList = "nick_name"))
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +28,8 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "nick_name", nullable = false)
-    private String nickName;
+    @Column(nullable = false)
+    private String nickname;
 
     @Column(nullable = false)
     private LocalDate birthday;
@@ -42,7 +43,7 @@ public class Member {
     public Member(SignupMemberRequest request, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.email = request.email().trim();
         this.password = bCryptPasswordEncoder.encode(request.password().trim());
-        this.nickName = request.nickName().trim();
+        this.nickname = request.nickname().trim();
         this.birthday = request.birthday();
     }
 }
