@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public record SignupMemberRequest(
         @NotBlank(message = "이메일은 필수 항목입니다.") @Email String email,
         @NotBlank(message = "비밀번호는 필수 항목입니다.") String password,
-        @NotBlank(message = "닉네임은 필수 항목입니다.") String nickName,
+        @NotBlank(message = "닉네임은 필수 항목입니다.") String nickname,
         @NotEmpty LocalDate birthday
 ) {
 }

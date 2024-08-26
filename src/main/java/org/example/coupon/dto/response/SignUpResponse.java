@@ -12,7 +12,7 @@ public record SignUpResponse(
     public static SignUpResponse of(Member member) {
         return new SignUpResponse(
                 member.getEmail(),
-                member.getNickName(),
+                member.getNickname(),
                 member.getBirthday()
         );
     }

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,8 +17,7 @@ public class Coupon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COUPON_ID")
-    private Long id;
+    private Long couponId;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -39,11 +37,20 @@ public class Coupon {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Coupon(String name, Long discountPrice, Float discountPercent, DiscountType discountType) {
+    public Coupon(String name, Long discountPrice, Float discountPercent) {
         this.name = name;
         this.discountPrice = discountPrice;
         this.discountPercent = discountPercent;
-        this.discountType = discountType;
+        this.discountType = setDiscountType(discountPrice, discountPercent);
+    }
+
+    private DiscountType setDiscountType(Long discountPrice, Float discountPercent) {
+        if (discountPrice == null && discountPercent == null) {
+            throw new IllegalArgumentException("discountPrice or discountPercent must be set");
+        }
+        else if (discountPrice == null) {
+            return DiscountType.PERCENT;
+        }
+        return DiscountType.AMOUNT;
     }
 }
-

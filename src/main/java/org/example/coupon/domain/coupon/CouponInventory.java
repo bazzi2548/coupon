@@ -2,22 +2,21 @@ package org.example.coupon.domain.coupon;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@Table(indexes =
+@Index(name = "idx_coupon_id", columnList = "coupon_id"))
 public class CouponInventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "COUPON_ID")
-    private Coupon coupon;
+    @Column(nullable = false, unique = true)
+    private Long couponId;
 
     @Column(nullable = false)
     private Long amount;

@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Table(indexes =
-@Index(name = "idx_member", columnList = "nick_name"))
+@Index(name = "idx_member", columnList = "nickname"))
 @NoArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
     @Column(nullable = false)
     private String email;
@@ -27,8 +27,8 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "nick_name", nullable = false)
-    private String nickName;
+    @Column(nullable = false)
+    private String nickname;
 
     @Column(nullable = false)
     private LocalDate birthday;
@@ -42,7 +42,7 @@ public class Member {
     public Member(SignupMemberRequest request, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.email = request.email();
         this.password = bCryptPasswordEncoder.encode(request.password());
-        this.nickName = request.nickName();
+        this.nickname = request.nickname();
         this.birthday = request.birthday();
     }
 }
