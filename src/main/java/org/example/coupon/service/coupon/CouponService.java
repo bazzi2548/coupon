@@ -42,7 +42,7 @@ public class CouponService {
 
     // DB에서 쿠폰 재고를 가져오고 캐시에 저장하는 메서드
     @Transactional(readOnly = true)
-    private Long loadCouponInventoryFromDB(Long couponId) {
+    protected Long loadCouponInventoryFromDB(Long couponId) {
         CouponInventory inventory = couponInventoryRepository.findByCouponId(couponId);
         return inventory != null ? inventory.getAmount() : 0L;
     }
@@ -73,7 +73,7 @@ public class CouponService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void saveIssuancesToDatabase(List<CouponIssuance> issuanceBatch) {
+    protected void saveIssuancesToDatabase(List<CouponIssuance> issuanceBatch) {
         if (!issuanceBatch.isEmpty()) {
             couponIssuanceRepository.saveAll(issuanceBatch);
         }
