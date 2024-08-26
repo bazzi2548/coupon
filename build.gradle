@@ -29,6 +29,7 @@ dependencies {
     implementation 'org.springframework.security:spring-security-crypto:6.3.1'
     implementation 'org.apache.commons:commons-lang3:3.16.0'
     implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8' //caffeine cache
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
