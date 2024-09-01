@@ -1,20 +1,35 @@
 package org.example.coupon.config;
 
-import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.example.coupon.utils.CacheType;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class CacheConfig {
 
     @Bean
-    public Cache<Long, Long> couponInventoryCache() {
-        return Caffeine.newBuilder()
-                .expireAfterWrite(10, TimeUnit.MINUTES) // 캐시된 데이터의 유효기간 설정
-                .maximumSize(1000)
-                .build();
+    public List<CaffeineCache> caffeineCaches() {
+        return Arrays.stream(CacheType.values())
+                .map(cache -> new CaffeineCache(cache.getCacheName(), Caffeine.newBuilder().recordStats()
+                        .expireAfterWrite(cache.getExpiredAfterWrite(), TimeUnit.SECONDS)
+                        .maximumSize(cache.getMaximumSize())
+                        .build()))
+                .toList();
+    }
+
+    @Bean
+    public CacheManager cacheManager(List<CaffeineCache> caffeineCaches) {
+        SimpleCacheManager cacheManager = new SimpleCacheManager();
+        cacheManager.setCaches(caffeineCaches);
+
+        return cacheManager;
     }
 }
