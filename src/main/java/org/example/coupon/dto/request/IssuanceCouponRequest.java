@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 public record IssuanceCouponRequest(
         @NotBlank Long userId,
         @NotBlank Long couponId
-) implements Comparable<IssuanceCouponRequest> {
+) implements Comparable<IssuanceCouponRequest>, ForMemberRequest {
 
     @Override
     public int compareTo(IssuanceCouponRequest o) {
