@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RateLimit
 @RestController
 @RequestMapping("/api/coupon")
 @RequiredArgsConstructor
@@ -18,6 +17,7 @@ public class CouponController {
     private final CouponService couponService;
 
     @PostMapping("/issuance")
+    @RateLimit
     public String issuanceCoupon(@RequestBody IssuanceCouponRequest request) {
         return couponService.requestCouponIssuance(request);
     }
