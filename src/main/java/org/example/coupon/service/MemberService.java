@@ -25,7 +25,6 @@ public class MemberService {
         return ResponseDTO.getSuccess(SignUpResponse.of(member));
     }
 
-    @Transactional(readOnly = true)
     public void validateDuplicatedEmail(String email) {
         boolean isDuplicated = memberRepository.existsByEmail(email);
         if (isDuplicated) {
