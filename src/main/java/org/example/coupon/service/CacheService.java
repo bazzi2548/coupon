@@ -3,8 +3,6 @@ package org.example.coupon.service;
 import lombok.RequiredArgsConstructor;
 import org.example.coupon.domain.coupon.CouponInventory;
 import org.example.coupon.repository.coupon.CouponInventoryRepository;
-import org.example.coupon.repository.coupon.CouponIssuanceRepository;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 @RequiredArgsConstructor
 public class CacheService {
     private final CouponInventoryRepository couponInventoryRepository;
-    private final CouponIssuanceRepository couponIssuanceRepository;
 
     @Cacheable(value = "couponInventoryCache", key = "#couponId")
     @Transactional(readOnly = true)
