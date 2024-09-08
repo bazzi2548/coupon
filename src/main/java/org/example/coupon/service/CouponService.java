@@ -3,10 +3,15 @@ package org.example.coupon.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.coupon.dto.request.IssuanceCouponRequest;
+import org.example.coupon.exception.DuplicatedIssuanceException;
+import org.example.coupon.exception.ExhaustionException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import static org.example.coupon.exception.CustomExceptionMessage.DUPLICATE_ISSUANCE;
+import static org.example.coupon.exception.CustomExceptionMessage.EXHAUSTION;
 
 @Service
 @RequiredArgsConstructor
@@ -21,14 +26,14 @@ public class CouponService {
 
         Long currentInventory = cacheService.getCouponInventory(request.couponId());
         if (cacheService.isDuplicateRequest(request.userId(), request.couponId())) {
-            return "Duplicate request detected. Coupon already issued.";
+            throw new DuplicatedIssuanceException(DUPLICATE_ISSUANCE);
         }
 
         if (currentInventory != null && currentInventory > 0) {
             queue.add(request);
             return "Your request has been added to the queue.";
         } else {
-            return "Sorry, the coupon is no longer available.";
+            throw new ExhaustionException(EXHAUSTION);
         }
     }
 
