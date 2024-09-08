@@ -1,6 +1,7 @@
 package org.example.coupon.repository.coupon;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.coupon.domain.coupon.CouponIssuance;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class CouponBulkRepository {
@@ -19,6 +21,8 @@ public class CouponBulkRepository {
 
     @Transactional
     public void saveAll(List<CouponIssuance> couponIssuances) {
+        long start = System.currentTimeMillis();
+        log.info("커넥션 시작 = {}", System.currentTimeMillis());
         String sql = "INSERT INTO COUPON_ISSUANCE (COUPON_ID, MEMBER_ID) VALUES(?, ?)";
 
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
@@ -34,5 +38,6 @@ public class CouponBulkRepository {
                 return couponIssuances.size();
             }
         });
+        log.info("끝 = {}초", (System.currentTimeMillis()-start)/1000 );
     }
 }

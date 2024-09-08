@@ -35,6 +35,10 @@ public class CouponService {
     @Scheduled(fixedRate = 1000)
     public void processQueue() {
         log.info("스케쥴러 실행");
+        log.info("queue.size = {}", queue.size());
+        if(!queue.isEmpty()) {
+            log.info("시작 = {}", System.currentTimeMillis());
+        }
         while (!queue.isEmpty()) {
             var request = queue.poll();
             Long amount = cacheService.getCouponInventory(request.couponId());
