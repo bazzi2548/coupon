@@ -8,7 +8,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -29,12 +30,12 @@ public class CacheService {
     }
 
     @Cacheable(value = "issueTicketCache", key = "#couponId")
-    public ConcurrentSkipListSet<Long> getIssueMembers(Long couponId) {
-        return new ConcurrentSkipListSet<>();
+    public Set<Long> getIssueMembers(Long couponId) {
+        return ConcurrentHashMap.newKeySet();
     }
 
     @CachePut(value = "issueTicketCache", key = "#couponId")
-    public ConcurrentSkipListSet<Long> addIssueMember(Long userId, Long couponId, ConcurrentSkipListSet<Long> members) {
+    public Set<Long> addIssueMember(Long userId, Long couponId, Set<Long> members) {
         members.add(userId);
         return members;
     }

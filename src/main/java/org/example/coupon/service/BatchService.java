@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +16,7 @@ public class BatchService {
     private final CouponBulkRepository repository;
 
     @Transactional
-    public void saveIssuancesToDatabase(Long couponId, ConcurrentSkipListSet<Long> issuanceBatch) {
+    public void saveIssuancesToDatabase(Long couponId, Set<Long> issuanceBatch) {
 
         List<CouponIssuance> list = issuanceBatch.stream()
                 .map(i -> new CouponIssuance(couponId, i))
