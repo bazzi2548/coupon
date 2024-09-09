@@ -25,7 +25,7 @@ public class CouponService {
     public String requestCouponIssuance(IssuanceCouponRequest request) {
 
         Long currentInventory = cacheService.getCouponInventory(request.couponId());
-        if (cacheService.isDuplicateRequest(request.userId(), request.couponId())) {
+        if (cacheService.isDuplicateRequest(request.memberId(), request.couponId())) {
             throw new DuplicatedIssuanceException(DUPLICATE_ISSUANCE);
         }
 
@@ -49,8 +49,8 @@ public class CouponService {
             Long amount = cacheService.getCouponInventory(request.couponId());
             var issueMembers = cacheService.getIssueMembers(request.couponId());
             if (amount > issueMembers.size()) {
-                cacheService.addIssueMember(request.userId(), request.couponId(), issueMembers);
-                cacheService.saveDuplicateCheck(request.userId(), request.couponId());
+                cacheService.addIssueMember(request.memberId(), request.couponId(), issueMembers);
+                cacheService.saveDuplicateCheck(request.memberId(), request.couponId());
             }
 
             issueMembers = cacheService.getIssueMembers(request.couponId());

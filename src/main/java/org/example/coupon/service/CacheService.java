@@ -23,8 +23,8 @@ public class CacheService {
         return inventory != null ? inventory.getAmount() : 0L;
     }
 
-    @Cacheable(value = "duplicateCheckCache", key = "#userId + ':' + #couponId")
-    public boolean isDuplicateRequest(Long userId, Long couponId) {
+    @Cacheable(value = "duplicateCheckCache", key = "#memberId + ':' + #couponId")
+    public boolean isDuplicateRequest(Long memberId, Long couponId) {
         // 캐시에 저장된 정보가 없으면 중복이 아님을 의미
         return false;
     }
@@ -35,8 +35,8 @@ public class CacheService {
     }
 
     @CachePut(value = "issueTicketCache", key = "#couponId")
-    public Set<Long> addIssueMember(Long userId, Long couponId, Set<Long> members) {
-        members.add(userId);
+    public Set<Long> addIssueMember(Long memberId, Long couponId, Set<Long> members) {
+        members.add(memberId);
         return members;
     }
 
@@ -45,8 +45,8 @@ public class CacheService {
         return newInventory;
     }
 
-    @CachePut(value = "duplicateCheckCache", key = "#userId + ':' + #couponId")
-    public boolean saveDuplicateCheck(Long userId, Long couponId) {
+    @CachePut(value = "duplicateCheckCache", key = "#memberId + ':' + #couponId")
+    public boolean saveDuplicateCheck(Long memberId, Long couponId) {
         return true;
     }
 }

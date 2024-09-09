@@ -34,20 +34,20 @@ public class RateLimitAspect {
         if(!(args[0] instanceof ForMemberRequest)){
             return joinPoint.proceed();
         }
-        Long userId = ((ForMemberRequest) args[0]).userId();
+        Long memberId = ((ForMemberRequest) args[0]).memberId();
 
         Cache cache = cacheManager.getCache("rateLimitCache");
-        AtomicInteger requestCount = cache.get(userId, AtomicInteger.class);
+        AtomicInteger requestCount = cache.get(memberId, AtomicInteger.class);
 
         if (requestCount == null) {
             requestCount = new AtomicInteger(0);
-            cache.put(userId, requestCount);
+            cache.put(memberId, requestCount);
         }
 
         int updatedCount = requestCount.incrementAndGet();
 
         if (updatedCount > REQUEST_LIMIT) {
-            log.warn("Rate limit exceeded for userId: {}", userId);
+            log.warn("Rate limit exceeded for memberId: {}", memberId);
             throw new RateLimitExceededException(RATE_LIMIT);
         }
 
