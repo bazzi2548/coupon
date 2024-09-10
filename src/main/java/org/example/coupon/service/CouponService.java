@@ -5,9 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.coupon.dto.request.IssuanceCouponRequest;
 import org.example.coupon.exception.DuplicatedIssuanceException;
 import org.example.coupon.exception.ExhaustionException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.example.coupon.exception.CustomExceptionMessage.DUPLICATE_ISSUANCE;
@@ -19,7 +23,9 @@ import static org.example.coupon.exception.CustomExceptionMessage.EXHAUSTION;
 public class CouponService {
 
     private final CacheService cacheService;
+    private final RedisService redisService;
     private final BatchService batchService;
+
     private final ConcurrentLinkedQueue<IssuanceCouponRequest> queue = new ConcurrentLinkedQueue<>();
 
     public String requestCouponIssuance(IssuanceCouponRequest request) {
@@ -37,13 +43,9 @@ public class CouponService {
         }
     }
 
+    @Async
     @Scheduled(fixedRate = 1000)
     public void processQueue() {
-        log.info("스케쥴러 실행");
-        log.info("queue.size = {}", queue.size());
-        if(!queue.isEmpty()) {
-            log.info("시작 = {}", System.currentTimeMillis());
-        }
         while (!queue.isEmpty()) {
             var request = queue.poll();
             Long amount = cacheService.getCouponInventory(request.couponId());
@@ -52,12 +54,23 @@ public class CouponService {
                 cacheService.addIssueMember(request.memberId(), request.couponId(), issueMembers);
                 cacheService.saveDuplicateCheck(request.memberId(), request.couponId());
             }
-
-            issueMembers = cacheService.getIssueMembers(request.couponId());
-            if (issueMembers.size() == amount) {
-                batchService.saveIssuancesToDatabase(request.couponId(), issueMembers);
-                cacheService.updateCouponInventory(request.couponId(), issueMembers.size() - amount);
-            }
         }
+    }
+
+    @Scheduled(fixedRate = 1000)
+    public void processBatch() {
+        List<Long> couponIdKeys = cacheService.getCouponIdKeys();
+        couponIdKeys.forEach(couponId -> {
+            long start = System.currentTimeMillis();
+            Long amount = cacheService.getCouponInventory(couponId);
+            Set<Long> issueMembers = cacheService.getIssueMembers(couponId);
+            Long size = redisService.luaScriptSetCoupon(couponId, amount, issueMembers);
+
+            if (Objects.equals(size, amount)){
+                cacheService.updateCouponInventory(couponId, -1L);
+            }
+
+            log.info("처리시간 = {} ms", System.currentTimeMillis() - start);
+        });
     }
 }
