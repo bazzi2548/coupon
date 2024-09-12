@@ -10,6 +10,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -20,22 +21,22 @@ public class RedisService {
     private final CouponInventoryRepository couponInventoryRepository;
 
     public Set<Object> getIssueMembers(Long couponId) {
-        return redisTemplate.opsForSet().members("Issuance:" + couponId);
+        return redisTemplate.opsForSet().members("Inventory:" + couponId);
     }
 
     public Long getCouponInventory(Long couponId) {
         Integer redisInventory = (Integer) redisTemplate.opsForValue().get("Inventory:" + couponId);
         if (redisInventory == null) {
             CouponInventory inventory = couponInventoryRepository.findByCouponId(couponId);
-            setCouponInventory(couponId, inventory.getAmount());
-            return inventory.getAmount();
+            setCouponInventory(couponId, inventory.getRemainAmount());
+            return inventory.getRemainAmount();
         }
         return Long.valueOf(redisInventory);
     }
 
     public void setCouponInventory(Long couponId, Long amount) {
         String key = "Inventory:" + couponId;
-        redisTemplate.opsForSet().add(key, amount);
+        redisTemplate.opsForSet().add(key, amount, 10, TimeUnit.MINUTES);
     }
 
     public Long luaScriptSetCoupon(Long couponId, Long amount, Set<Long> set) {
