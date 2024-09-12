@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -19,6 +20,10 @@ public class CouponInventory {
     private Long couponId;
 
     @Column(nullable = false)
-    private Long amount;
+    private Long totalAmount;
+
+    @Setter
+    @Column(nullable = false)
+    private Long remainAmount;
 
 }

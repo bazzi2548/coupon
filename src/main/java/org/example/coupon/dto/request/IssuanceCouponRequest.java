@@ -3,7 +3,7 @@ package org.example.coupon.dto.request;
 import jakarta.validation.constraints.NotBlank;
 
 public record IssuanceCouponRequest(
-        @NotBlank Long userId,
+        @NotBlank Long memberId,
         @NotBlank Long couponId
 ) implements Comparable<IssuanceCouponRequest>, ForMemberRequest {
 

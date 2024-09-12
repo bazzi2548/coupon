@@ -2,7 +2,7 @@ package org.example.coupon.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.coupon.dto.request.IssuanceCouponRequest;
-import org.example.coupon.service.coupon.CouponService;
+import org.example.coupon.service.CouponService;
 import org.example.coupon.aspect.RateLimit;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

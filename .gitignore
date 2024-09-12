@@ -39,3 +39,4 @@ out/
 *.yml
 .env
 /database_data/
+/redis/
