@@ -24,7 +24,11 @@ public class CacheService {
     @Transactional(readOnly = true)
     public Long getCouponInventory(Long couponId) {
         CouponInventory inventory = couponInventoryRepository.findByCouponId(couponId);
-        return inventory != null ? inventory.getAmount() : 0L;
+        if (inventory == null) {
+            return 0L;
+        }
+
+        return inventory.getRemainAmount() == 0L ? -2 : inventory.getRemainAmount();
     }
 
     @Cacheable(value = "duplicateCheckCache", key = "#memberId + ':' + #couponId")
